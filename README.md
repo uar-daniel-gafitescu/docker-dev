@@ -1,4 +1,4 @@
-$ git clone git@github.com:osteel/docker-tutorial.git
+$ git clone git@github.com:uar-daniel-gafitescu/docker-dev.git
 
 $ docker-compose up -d
 
