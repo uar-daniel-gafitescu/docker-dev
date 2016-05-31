@@ -10,6 +10,8 @@ RUN docker-php-ext-install tokenizer
 RUN docker-php-ext-install json
 RUN docker-php-ext-install mbstring
 
+RUN apt-get update && apt-get install -y zlib1g-dev && docker-php-ext-install zip
+
 # Install mcrypt
 RUN apt-get update && apt-get install -y \
         libfreetype6-dev \
@@ -23,3 +25,25 @@ RUN apt-get update \
 && apt-get install git -y -q \
 && git clone -b php7 https://github.com/phpredis/phpredis.git /usr/src/php/ext/redis \
 && docker-php-ext-install redis
+
+
+# Install PHP-CLI 7, some PHP extentions and some useful Tools with APT
+RUN apt-get update && apt-get install -y --force-yes \
+        sqlite3 \
+        vim \
+        nodejs \
+        nodejs-dev \
+        npm
+
+# Install gulp and bower with NPM
+RUN npm install -g \
+    gulp \
+    bower
+
+# Add a symbolic link for Node
+RUN ln -s /usr/bin/nodejs /usr/bin/node
+
+# Add an alias for PHPUnit
+RUN echo "alias phpunit='./vendor/bin/phpunit'" >> ~/.bashrc
+# Source the bash
+RUN . ~/.bashrc
