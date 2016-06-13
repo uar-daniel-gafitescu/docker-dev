@@ -17,6 +17,7 @@ RUN apt-get update && apt-get install -y \
         libfreetype6-dev \
         libjpeg62-turbo-dev \
         libmcrypt-dev \
+        libldap2-dev  \
         libpng12-dev \
     && docker-php-ext-install -j$(nproc) iconv mcrypt
 
@@ -26,6 +27,10 @@ RUN apt-get update \
 && git clone -b php7 https://github.com/phpredis/phpredis.git /usr/src/php/ext/redis \
 && docker-php-ext-install redis
 
+RUN ln -s /usr/include/x86_64-linux-gnu/gmp.h /usr/include/gmp.h && \
+ docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu
+
+RUN docker-php-ext-install ldap
 
 # Install PHP-CLI 7, some PHP extentions and some useful Tools with APT
 RUN apt-get update && apt-get install -y --force-yes \
