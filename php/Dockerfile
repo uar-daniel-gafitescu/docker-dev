@@ -40,6 +40,10 @@ RUN apt-get update && apt-get install -y --force-yes \
         nodejs-dev \
         npm
 
+RUN git clone https://github.com/hnw/php-timecop.git && cd php-timecop && phpize && ./configure && make && make install
+RUN echo "extension=timecop.so" >> /usr/local/etc/php/conf.d/timecop.ini
+
+
 # Install gulp and bower with NPM
 RUN npm install -g \
     gulp \
