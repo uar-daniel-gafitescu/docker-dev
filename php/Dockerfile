@@ -54,7 +54,19 @@ RUN npm install -g \
 # Add a symbolic link for Node
 RUN ln -s /usr/bin/nodejs /usr/bin/node
 
-# Add an alias for PHPUnit
+# Add an aliases
 RUN echo "alias phpunit='./vendor/bin/phpunit'" >> ~/.bashrc
+RUN echo "alias dump='composer dumpautoload'" >> ~/.bashrc
+RUN echo "alias refresh='php artisan migrate:refresh --seed'" >> ~/.bashrc
 # Source the bash
 RUN . ~/.bashrc
+
+# add cron jobs
+
+ADD crontab /etc/cron.d/ehos-cron
+RUN chmod 0644 /etc/cron.d/ehos-cron
+RUN touch /var/log/cron.log
+
+RUN echo "* * * * * php /var/www/html/artisan schedule:run >> /dev/null 2>&1" >> /etc/cron.d/ehos-cron
+
+CMD cron && tail -f /var/log/cron.log
