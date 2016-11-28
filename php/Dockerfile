@@ -63,10 +63,10 @@ RUN . ~/.bashrc
 
 # add cron jobs
 
-ADD crontab /etc/cron.d/ehos-cron
-RUN chmod 0644 /etc/cron.d/ehos-cron
-RUN touch /var/log/cron.log
+RUN apt-get update && apt-get -y install cron
 
-RUN echo "* * * * * php /var/www/html/artisan schedule:run >> /dev/null 2>&1" >> /etc/cron.d/ehos-cron
+ADD ehos.cron /etc/cron.d/ehos.cron
+RUN chmod 0644 /etc/cron.d/ehos.cron
+RUN touch /var/log/cron.log
 
 CMD cron && tail -f /var/log/cron.log
