@@ -43,21 +43,6 @@ redis:
     ports:
         - 6379:6379
 
-beanstalkd:
-    build: ./beanstalkd
-    ports:
-        - 11300:11300
-    privileged: true
-    links:
-        - php
-
-beanstalkd-console:
-    build: ./beanstalkd-console
-    ports:
-        - 2080:2080
-    links:
-        - beanstalkd
-
 data:
     image: mysql:latest
     volumes:
