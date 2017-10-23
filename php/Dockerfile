@@ -11,7 +11,7 @@ RUN docker-php-ext-install json
 RUN docker-php-ext-install mbstring
 
 RUN apt-get update && apt-get install -y zlib1g-dev && docker-php-ext-install zip
-
+RUN apt-get install -y git
 # Install mcrypt
 RUN apt-get update && apt-get install -y \
         libfreetype6-dev \
@@ -24,10 +24,14 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install -j$(nproc) iconv mcrypt
 
 # Install phpredis 2.2.7
-RUN apt-get update \
-&& apt-get install git -y -q \
-&& git clone -b php7 https://github.com/phpredis/phpredis.git /usr/src/php/ext/redis \
-&& docker-php-ext-install redis
+RUN \
+    pecl install redis && \
+    pecl clear-cache
+
+RUN \
+    docker-php-ext-enable redis.so && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/list/*
 
 RUN ln -s /usr/include/x86_64-linux-gnu/gmp.h /usr/include/gmp.h && \
  docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu
@@ -51,6 +55,9 @@ RUN npm install -g \
     gulp \
     bower
 
+# disable the gulp
+RUN export DISABLE_NOTIFIER=true
+
 # Add a symbolic link for Node
 RUN ln -s /usr/bin/nodejs /usr/bin/node
 
@@ -58,6 +65,7 @@ RUN ln -s /usr/bin/nodejs /usr/bin/node
 RUN echo "alias phpunit='./vendor/bin/phpunit'" >> ~/.bashrc
 RUN echo "alias dump='composer dumpautoload'" >> ~/.bashrc
 RUN echo "alias refresh='php artisan migrate:refresh --seed'" >> ~/.bashrc
+RUN echo "alias art='php artisan'" >> ~/.bashrc
 # Source the bash
 RUN . ~/.bashrc
 

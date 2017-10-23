@@ -1,0 +1,5 @@
+docker-machine start;
+docker-machine env default;
+eval "$(docker-machine env default)";
+docker-compose up -d;
+docker exec -it  docker_php_1  bash;
